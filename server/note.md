@@ -83,8 +83,22 @@ npm install mongoose --save
 
 
 
-10、密码加密/用户注册
+---
 
-密码加密Bcryptjs
+![image-20250116142102580](./assets/image-20250116142102580.png)
 
-11、token的使用
+10、密码加密/用户注册接口
+
+密码加密Bcryptjs(未完善)
+
+```bash
+server % cnmp install bcryptjs
+```
+
+11、token的使用/用户登录接口
+
+```bash
+server % cnpm install jsonwebtoken
+```
+
+12、搜索接口

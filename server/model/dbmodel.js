@@ -6,8 +6,8 @@ var Schema = mongoose.Schema;
 var UserSchema = new Schema({
     // 唯一id
     id: {
-        type: Number,
-        default: new Date(),
+        type: String,
+        default: new mongoose.Types.ObjectId()
     },
     name: { // 用户名
         type: String,
@@ -18,7 +18,10 @@ var UserSchema = new Schema({
         type: String,
         required: true,
     },
-   
+    imgUrl: { // 头像
+        type: String,
+        default: 'user.png'
+    },
     time: {
         type: Date,
         default: Date.now
