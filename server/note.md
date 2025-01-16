@@ -102,3 +102,7 @@ server % cnpm install jsonwebtoken
 ```
 
 12、搜索接口
+搜用户-判断是否为好友
+搜群-判断是否在群中
+
+

@@ -1,5 +1,8 @@
 const express = require('express')
 const cors = require('cors');
+const jwt = require('./data/jwt.js');
+const e = require('express');
+
 const app = express()
 const port = 3660
 
@@ -8,20 +11,10 @@ app.use(cors());
 
 // // 使用body-parser中间件解析POST请求体
 app.use(express.json()); // 解析application/json
-app.use(express.urlencoded({ extended: true })); // 解析application/x-www-form-urlencoded
+app.use(express.urlencoded({
+  extended: true
+})); // 解析application/x-www-form-urlencoded
 
-// app.get('/', (req, res) => {
-//   res.send('Hello World!')
-// })
-// // 注册接口
-// app.post('/register', (req, res) => {
-//   const { name, pwd } = req.body;
-//   // 这里可以添加对name和pwd的验证逻辑
-//   // 例如，检查name是否已存在于数据库中
-//   // 如果验证通过，可以将用户信息保存到数据库中
-//   // 这里我们只是简单地返回一个成功消息
-//   res.json({ code:0,data:{name,pwd},message: '注册成功' });
-// });
 // 引入路由
 require('./router/index')(app)
 

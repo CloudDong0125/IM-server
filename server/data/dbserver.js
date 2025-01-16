@@ -2,10 +2,15 @@
 // var bcrypt = require('../data/bcryptjs');
 var jwt = require('../data/jwt');
 var dbmodel = require('../model/dbmodel');
-// var User = dbmodel.model('User');
+
 var User = dbmodel.User;
+var Friend = dbmodel.Friend;
+var Group = dbmodel.Group;
+var GroupMember = dbmodel.GroupMember;
+var GroupMessage = dbmodel.GroupMessage;
 
 module.exports = {
+  // 注册前查找用户
   findUserByName: async function (name) {
     console.log(name);
     try {
@@ -42,52 +47,190 @@ module.exports = {
     }
   },
 
-  // ... 其他代码 ...
+  // ----------
+  // 用户验证
+  userMatch: async function (userData, res) {
+    // 输出给前端的内容
+    let out = {
+      'name': 1,
+      'imgUrl': 1
+    };
 
-// 用户验证
-userMatch: async function (userData, res) {
-  let out = {
-    'name': 1,
-    'imgUrl': 1
-  };
-
-  try {
-    let doc = await User.findOne({
-      $and: [
-        { name: userData.name },
-        { pwd: userData.pwd }
-      ]
-    }, out);
-    if (!doc) {
-      console.log('用户不存在');
+    try {
+      let doc = await User.findOne({
+        $and: [ // $and 操作符，用于同时匹配多个条件
+          {
+            name: userData.name
+          },
+          {
+            pwd: userData.pwd
+          }
+        ]
+      }, out);
+      if (!doc) {
+        console.log('用户不存在');
+        res.send({
+          status: 404,
+          msg: '用户不存在'
+        });
+        return;
+      }
+      let token = jwt.generateToken(doc._id);
+      let back = {
+        id: doc._id,
+        name: doc.name,
+        imgUrl: doc.imgUrl,
+        token: token
+      };
       res.send({
-        status: 404,
+        code: 0,
+        data: back
+      });
+    } catch (err) {
+
+      if (res) {
+        res.send({
+          code: 1
+        });
+      }
+    }
+  },
+
+  // ----------
+  // 搜索用户(模糊查询)
+  searchUser: async function (userData, res) {
+    if (!userData || !userData.name) {
+      return res.send({
+        code: 404,
         msg: '用户不存在'
       });
-      return;
     }
-    let token = jwt.generateToken(doc._id);
-    let back = {
-      id: doc._id,
-      name: doc.name,
-      imgUrl: doc.imgUrl, 
-      token: token
-    };
-    res.send({
-      code: 0,
-      data: back
-    });
-  } catch (err) {
 
-    if (res) {
+    var wherestr = {};
+    if (userData.name !== 'im') {
+      wherestr = {
+        $and: [{
+          name: {
+            $regex: userData.name
+          }
+        }]
+      };
+    }
+
+    var out = {
+      'name': 1,
+      'imgUrl': 1,
+    };
+    try {
+      var doc = await User.find(wherestr, out); // 用户搜索
+      if (!doc || doc.length === 0) {
+        return res.send({
+          code: 404,
+          msg: '用户不存在'
+        });
+      }
+      res.send({
+        code: 0,
+        data: doc
+      });
+    } catch (err) {
+      console.log(err);
+      res.send({
+        code: 1,
+      });
+    }
+  },
+
+  // 用户匹配-- 判断是否为好友 Friend表
+  isFrind: async function (uid, fid, res) {
+    let wherestr = {
+      'userId': uid,
+      'friendId': fid,
+      'state': 0
+    };
+    try {
+      var doc = await Friend.findOne(wherestr);
+      if (!doc) {
+        res.send({
+          code: 404,
+          msg: '用户不存在'
+        });
+        return;
+      }
+      res.send({
+        code: 0,
+        data: doc
+      });
+    } catch (err) {
       res.send({
         code: 1
       });
     }
-  }
-}
+  },
 
-// ... 其他代码 ...
+  // 搜素群
+  searchGroup: async function (data, res) {
+    var wherestr = {}
+    if (data == 'im') {
+      wherestr = {};
+    } else {
+      wherestr = {
+        $and: [{
+          name: {
+            $regex: data
+          }
+        }]
+      };
+    }
+
+    var out = {
+      'groupName': 1,
+      'groupImg': 1,
+    };
+    try {
+      var doc = await Group.find(wherestr, out); // 用户搜索
+      if (!doc) {
+        res.send({
+          code: 404,
+          msg: '用户不存在'
+        });
+        return;
+      }
+      res.send({
+        code: 0,
+        data: doc
+      });
+    } catch (err) {
+      res.send({
+        code: 1
+      });
+    }
+  },
+  // 群匹配
+  isInGroup: async function (uid, gid, res) {
+    let wherestr = {
+      'userId': uid,
+      'groupId': gid,
+    };
+    try {
+      var doc = await GroupMember.findOne(wherestr);
+      if (!doc) {
+        res.send({
+          code: 404,
+          msg: '用户不存在'
+        });
+        return;
+      }
+      res.send({
+        code: 0,
+        data: doc
+      });
+    } catch (err) {
+      res.send({
+        code: 1
+      });
+    }
+  },
 
 
 
