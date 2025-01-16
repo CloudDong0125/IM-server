@@ -44,3 +44,47 @@ app.listen(port, () => {
 5、建立新的路由文件
 
 6、关于跨域的处理
+```js
+const cors = require('cors');
+// 使用 CORS 中间件，允许所有跨域请求
+app.use(cors());
+```
+
+
+7、（重点）连接数据库--mongodb
+```bash 
+npm install mongoose --save
+```
+
+
+
+创建初步连接
+
+`IM/server/config/db.js`
+
+`IM/server/model/dbmodel.js`
+
+`IM/server/data/dbserver.js`
+
+`IM/server/router/index.js`
+
+<img src="./assets/image-20250114105253446.png" alt="image-20250114105253446" style="zoom:50%;" />
+
+
+8、数据表的设计
+
+![image-20250114102646978](./assets/image-20250114102646978.png)
+
+
+
+9、连接邮箱
+
+邮箱代理
+
+
+
+10、密码加密/用户注册
+
+密码加密Bcryptjs
+
+11、token的使用
