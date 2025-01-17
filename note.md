@@ -75,6 +75,14 @@ npm install mongoose --save
 
 ![image-20250114102646978](./assets/image-20250114102646978.png)
 
+数据库操作
+
+
+
+> - 用户详情
+> - 更新资料
+> - 修改昵称
+
 
 
 9、连接邮箱
@@ -105,4 +113,6 @@ server % cnpm install jsonwebtoken
 搜用户-判断是否为好友
 搜群-判断是否在群中
 
-
+13、好友详情
+用户信息修改
+好友昵称修改

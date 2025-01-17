@@ -232,6 +232,53 @@ module.exports = {
     }
   },
 
+  // -----
+  // 用户详情
+  userDetail: async function (id, res) {
+    var wherestr = {
+      '_id': id
+    };
+    var out = {
+      'name': 1,
+      'imgUrl': 1,
+    };
+    try {
+      var doc = await User.findOne(wherestr, out);
+      if (!doc) {
+        res.send({
+          code: 404,
+          msg: '用户不存在'
+        });
+        return;
+      }
+      res.send({
+        code: 0,
+        data: doc
+      });
+    } catch (err) {
+      res.send({
+        code: 1
+      });
+    }
+  },
+  // 用户信息修改（较复杂）
+  userUpdate: async function (userData,res) {
+    let updatestr = {}
+    if (userData.name) {
+      updatestr.name = userData.name
+    }
+    if (userData.imgUrl) {
+      updatestr.imgUrl = userData.imgUrl
+    }
+    if (userData.pwd) {
+      updatestr.pwd = userData.pwd
+    }
+    let wherestr = {
+      '_id': userData.id
+    };
+    
+  }
+
 
 
 };

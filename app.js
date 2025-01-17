@@ -15,6 +15,10 @@ app.use(express.urlencoded({
   extended: true
 })); // 解析application/x-www-form-urlencoded
 
+// token
+
+
+
 // 引入路由
 require('./router/index')(app)
 
