@@ -36,10 +36,17 @@ var FriendSchema = new Schema({
         type: Schema.Types.ObjectId,ref:'User',
     },
     state: { // 好友状态
-        type: Number,
-        default: 0 // 0 未添加 1 已添加 2 已拒绝 3 已删除
+        type: Number,// 0为好友、1为申请、2为拒绝 
+    },
+    nickName:{ // 备注名称
+        type: String,
+        default: ''
     },
     time: {
+        type: Date,
+        default: Date.now
+    },
+    lastTime: {  // 最后聊天时间
         type: Date,
         default: Date.now
     },
@@ -61,15 +68,15 @@ var MessageSchema = new Schema({
         type: String,
         default: ''
     },
-    messageType: { // 消息类型
+    types: { // 消息类型
         type: Number,
         default: 0 // 0 文本 1 图片 2 语音 3 视频 4 文件
     },
-    messageStatue:{ // 消息状态
+    state:{ // 消息状态
         type: Number,
         default: 0 // 0 未读 1 已读
     },
-    create_time: {
+    time: {
         type: Date
     },
 })
@@ -78,76 +85,57 @@ var GroupSchema = new Schema({
     userId: { // 用户名
         type: Schema.Types.ObjectId,ref:'User',
     },
-    groupId: { // 群组id
+    name:{
         type: String,
-        default: ''
     },
-    groupName: { // 群组名称
+    imgUrl:{
         type: String,
-        default: ''
+        default:'group.png'
     },
-    groupAvatar: { // 群组头像
-        type: String,
-        default: 'group.png'
-    },
-    groupOwner: { // 群主id
-        type: Schema.Types.ObjectId,ref:'User',
-    },
-    groupMember: { // 群成员id
-        type: Array,
-        default: []
-    },
-    groupType: { // 群组类型
-        type: Number,
-        default: 0 // 0 公开 1 私密 2 加密
-    },
-    groupNotice: { // 群组公告
-        type: String,
-        default: ''
-    },
-    create_time: {
+    time: {
         type: Date,
         default: Date.now
     },
+    notice:{ // 群公告
+        type: String,
+        default: ''
+    },
+   
 })
 
 // 群成员表
-var GroupMemberSchema = new Schema({
-    userId: { // 用户名
-        type: Schema.Types.ObjectId,ref:'User',
-    },
+var GroupUserSchema = new Schema({
+    
     groupId: { // 群组id
         type: Schema.Types.ObjectId,ref:'Group',
         default: ''
     },
-    groupMemberId: { // 群成员id
+    userId: { // 用户名
         type: Schema.Types.ObjectId,ref:'User',
     },
-    groupMemberName: { // 群成员名称
-        type: String,
-        default: ''
-    },
-    groupMemberAvatar: { // 群成员头像
-        type: String,
-        default: 'user.png'
-    },
-    groupMemberRole: { // 群成员角色
-        type: Number,
-        default: 0 // 0 普通成员 1 管理员 2 群主
-    },
-    create_time: {
+    name:{type:String},
+    tip:{type:Number,default:0},
+    time: {
         type: Date,
         default: Date.now
     },
+    lastTime: { // 最后聊天时间
+        type: Date,
+        default: Date.now
+    },
+    shield:{ // 屏蔽消息
+        type: Number,
+        default: 0 // 0 不屏蔽 1 屏蔽
+    },
 })
 // 群消息表
-var GroupMessageSchema = new Schema({
-    userId: { // 用户名
-        type: Schema.Types.ObjectId,ref:'User',
-    },
+var GroupMsgSchema = new Schema({
     groupId: { // 群组id
         type: Schema.Types.ObjectId,ref:'Group',
         default: ''
+    },
+    userId: { // 用户名
+        type: Schema.Types.ObjectId,ref:'User',
     },
     groupMessageId: { // 群消息id
         type: String,
@@ -165,7 +153,7 @@ var GroupMessageSchema = new Schema({
         type: Number,
         default: 0 // 0 未读 1 已读
     },
-    create_time: {
+    time: {
         type: Date
     },
 })
@@ -176,6 +164,6 @@ module.exports = {
     Friend: db.model('Friend', FriendSchema),
     Message: db.model('Message', MessageSchema),
     Group: db.model('Group', GroupSchema),
-    GroupMember: db.model('GroupMember', GroupMemberSchema),
-    GroupMessage: db.model('GroupMessage', GroupMessageSchema),
+    GroupUser: db.model('GroupUser', GroupUserSchema),
+    GroupMsg: db.model('GroupMsg', GroupMsgSchema),
 };

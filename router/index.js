@@ -1,6 +1,8 @@
 var signup = require('../serve/signup');
 var signin = require('../serve/signin');
 var search = require('../serve/search');
+var user = require('../serve/user');
+var friend = require('../serve/friend');
 var jsonwebtoken = require('jsonwebtoken'); // 避免命名冲突
 var secret = 'secret'; // 加密秘钥
 
@@ -66,5 +68,31 @@ module.exports = function (app) {
   app.post('/isInGroup', (req, res) => {
     search.isInGroup(req, res);
   });
+
+  // ---
+  // 用户详情
+  app.post('/userDetail', (req, res) => {
+    user.userDetail(req, res);
+  });
+  // 修改用户昵称
+  app.post('/updateUserNickname', (req, res) => {
+    user.updateUserNickname(req, res);
+  });
+
+
+  // ---好友申请
+  // 好友申请
+  app.post('/friend/applyFriend', (req, res) => {
+    friend.applyFriend(req, res);
+  });
+  // 同意好友
+  app.post('/friend/updataFriendState', (req, res) => {
+    friend.updataFriendState(req, res);
+  });
+  // 删除好友
+  app.post('/friend/deleteFriend', (req, res) => {
+    friend.deleteFriend(req, res);
+  });
+
 
 };

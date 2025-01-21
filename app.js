@@ -17,10 +17,9 @@ app.use(express.urlencoded({
 
 // token
 
-
-
 // 引入路由
 require('./router/index')(app)
+
 
 // 404处理
 app.use(function (req, res, next) {
