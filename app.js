@@ -3,6 +3,7 @@ const cors = require('cors');
 const jwt = require('./data/jwt.js');
 const e = require('express');
 
+
 const app = express()
 const port = 3660
 
@@ -19,7 +20,7 @@ app.use(express.urlencoded({
 
 // 引入路由
 require('./router/index')(app)
-
+require('./router/file')(app)
 
 // 404处理
 app.use(function (req, res, next) {

@@ -138,3 +138,21 @@ server % cnpm install jsonwebtoken
 接口：同意好友
 
 接口：删除好友
+
+
+
+
+
+文件上传
+
+插件：multer
+
+```bash
+IM-server % cnpm install --save multer
+```
+
+上传
+
+动态创建文件夹
+
+文件大小限制
