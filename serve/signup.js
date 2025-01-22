@@ -4,7 +4,7 @@ var dbserver = require('../data/dbserver.js');
 exports.buildUser = async function(req, res) {
     var name = req.body.name;
     var pwd = req.body.pwd;
-    console.log(name, pwd, 'signup');
+    // console.log(name, pwd, 'signup');
 
     // 检查 name 是否为空
     if (!name) {
@@ -35,7 +35,7 @@ exports.buildUser = async function(req, res) {
         if (success) {
             res.status(200).send({
                 code: 0,
-                msg: '注册成功'
+                msg: '注册成功',
             });
         } else {
             console.error('注册失败，但未返回错误信息');

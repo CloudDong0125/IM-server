@@ -1,8 +1,9 @@
-var signup = require('../serve/signup');
-var signin = require('../serve/signin');
-var search = require('../serve/search');
-var user = require('../serve/user');
-var friend = require('../serve/friend');
+var signup = require('../serve/signup'); // 引入注册模块
+var signin = require('../serve/signin'); // 引入登录模块
+var search = require('../serve/search'); // 引入搜索模块
+var user = require('../serve/user'); // 引入用户模块
+var friend = require('../serve/friend'); // 引入好友模块
+var index = require('../serve/index'); // 引入好友列表模块
 var jsonwebtoken = require('jsonwebtoken'); // 避免命名冲突
 var secret = 'secret'; // 加密秘钥
 
@@ -15,7 +16,7 @@ function checkToken(req, res, next) {
 
   // 获取请求头中的token
   const token = req.headers.token;
-  console.log(req.headers.token);
+  // console.log(req.headers.token);
 
   if (!token) {
     return res.status(401).send('未提供token');
@@ -94,5 +95,22 @@ module.exports = function (app) {
     friend.deleteFriend(req, res);
   });
 
+  // ---好友列表
+  // 好友列表
+  app.post('/index/getFriendList', (req, res) => {
+    index.getFriendList(req, res);
+  });
+  // 获取最后聊天记录
+  app.post('/index/getLastMessage', (req, res) => {
+    index.getLastMessage(req, res);
+  });
+  // 未读消息
+  app.post('/index/unReadMsg', (req, res) => {
+    index.unReadMsg(req, res);
+  });
+  // 改变消息状态
+  app.post('/index/updateReadMsg', (req, res) => {
+    index.updateReadMsg(req, res);
+  });
 
 };

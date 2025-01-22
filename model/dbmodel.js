@@ -4,6 +4,10 @@ var Schema = mongoose.Schema;
 
 // 用户表 
 var UserSchema = new Schema({
+    xiha:{
+        type: String,
+        default: '111'
+    },
     // 唯一id
     id: {
         type: String,
@@ -29,16 +33,23 @@ var UserSchema = new Schema({
 })
 // 好友表
 var FriendSchema = new Schema({
-    userId: { // 用户名
-         type: Schema.Types.ObjectId, ref: 'User'
+    userId: { // 用id
+        type: Schema.Types.ObjectId,
+        ref: 'User'
     },
+   
     friendId: { // 好友id
-        type: Schema.Types.ObjectId,ref:'User',
+        type: Schema.Types.ObjectId,
+        ref: 'User',
     },
     state: { // 好友状态
-        type: Number,// 0为好友、1为申请、2为拒绝 
+        type: Number, // 0为好友、1为申请、2为拒绝 
     },
-    nickName:{ // 备注名称
+    name: {
+        type: String,
+        default: ''
+    },
+    markname: { // 备注名称
         type: String,
         default: ''
     },
@@ -46,7 +57,7 @@ var FriendSchema = new Schema({
         type: Date,
         default: Date.now
     },
-    lastTime: {  // 最后聊天时间
+    lastTime: { // 最后聊天时间
         type: Date,
         default: Date.now
     },
@@ -55,10 +66,15 @@ var FriendSchema = new Schema({
 // 一对一聊天表
 var MessageSchema = new Schema({
     userId: { // 用户名
-        type: Schema.Types.ObjectId,ref:'User',
+        type: Schema.Types.ObjectId,
+        ref: 'User',
     },
     friendId: { // 好友id
-        type: Schema.Types.ObjectId,ref:'User',
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+    },
+    name: {
+        type: String
     },
     messageId: { // 聊天id
         type: String,
@@ -72,7 +88,7 @@ var MessageSchema = new Schema({
         type: Number,
         default: 0 // 0 文本 1 图片 2 语音 3 视频 4 文件
     },
-    state:{ // 消息状态
+    state: { // 消息状态
         type: Number,
         default: 0 // 0 未读 1 已读
     },
@@ -83,38 +99,46 @@ var MessageSchema = new Schema({
 // 群组表
 var GroupSchema = new Schema({
     userId: { // 用户名
-        type: Schema.Types.ObjectId,ref:'User',
+        type: Schema.Types.ObjectId,
+        ref: 'User',
     },
-    name:{
+    name: {
         type: String,
     },
-    imgUrl:{
+    imgUrl: {
         type: String,
-        default:'group.png'
+        default: 'group.png'
     },
     time: {
         type: Date,
         default: Date.now
     },
-    notice:{ // 群公告
+    notice: { // 群公告
         type: String,
         default: ''
     },
-   
+
 })
 
 // 群成员表
 var GroupUserSchema = new Schema({
-    
+
     groupId: { // 群组id
-        type: Schema.Types.ObjectId,ref:'Group',
+        type: Schema.Types.ObjectId,
+        ref: 'Group',
         default: ''
     },
     userId: { // 用户名
-        type: Schema.Types.ObjectId,ref:'User',
+        type: Schema.Types.ObjectId,
+        ref: 'User',
     },
-    name:{type:String},
-    tip:{type:Number,default:0},
+    name: {
+        type: String
+    },
+    tip: {
+        type: Number,
+        default: 0
+    },
     time: {
         type: Date,
         default: Date.now
@@ -123,7 +147,7 @@ var GroupUserSchema = new Schema({
         type: Date,
         default: Date.now
     },
-    shield:{ // 屏蔽消息
+    shield: { // 屏蔽消息
         type: Number,
         default: 0 // 0 不屏蔽 1 屏蔽
     },
@@ -131,27 +155,20 @@ var GroupUserSchema = new Schema({
 // 群消息表
 var GroupMsgSchema = new Schema({
     groupId: { // 群组id
-        type: Schema.Types.ObjectId,ref:'Group',
+        type: Schema.Types.ObjectId,
+        ref: 'Group',
         default: ''
     },
     userId: { // 用户名
-        type: Schema.Types.ObjectId,ref:'User',
+        type: Schema.Types.ObjectId,
+        ref: 'User',
     },
-    groupMessageId: { // 群消息id
-        type: String,
-        default: ''
+    message:{
+        type: String
     },
-    groupMessage: { // 群消息
-        type: String,
-        default: ''
-    },
-    groupMessageType: { // 群消息类型
+    types: { // 消息类型
         type: Number,
         default: 0 // 0 文本 1 图片 2 语音 3 视频 4 文件
-    },
-    groupMessageStatue:{ // 群消息状态
-        type: Number,
-        default: 0 // 0 未读 1 已读
     },
     time: {
         type: Date

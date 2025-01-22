@@ -1,5 +1,8 @@
 // 操作数据库
 // var bcrypt = require('../data/bcryptjs');
+const {
+  Query
+} = require('mongoose');
 var jwt = require('../data/jwt');
 var dbmodel = require('../model/dbmodel');
 
@@ -550,6 +553,158 @@ module.exports = {
     }
   },
 
+  /**
+   * 获取好友列表
+   */
+  getFriendList: async function (uid, state, res) {
+    try {
+      const query = Friend.find({})
+        .where({
+          $or: [{
+              'userId': uid
+            },
+            {
+              'state': state
+            }
+          ]
+        })
+        .populate('friendId')
+        .sort({
+          'lastTime': -1
+        });
+      const docs = await query.exec().then((data) => {
+        let result = data.map((item) => {
+          console.log(item)
+          return {
+            id: item._id, // user表
+            name: item.name,
+            imgUrl: item.imgUrl,
+            markname: item.markname,
+            lastTime: item.lastTime,
+          }
+        });
+        return result;
+
+      });
+
+
+      res.send({
+        code: 0,
+        data: docs
+      });
+    } catch (err) {
+      console.log(err);
+      res.send({
+        code: 1
+      });
+    }
+  },
+
+
+  /**
+   * 一对一聊天消息
+   */
+  getLastMessage: async function (data, res) {
+    try {
+      // 创建一个查询对象，从 Message 集合中查找所有记录
+      const query = Message.find({})
+        // 使用 where 方法添加查询条件
+        .where({
+          // 使用 $or 操作符指定多个条件，只要满足其中一个条件，记录就会被匹配
+          $or: [{
+              // 第一个条件：userId 为 data.uid，friendId 为 data.fid
+              'userId': data.uid,
+              'friendId': data.fid
+            },
+            {
+              // 第二个条件：userId 为 data.fid，friendId 为 data.uid
+              'userId': data.fid,
+              'friendId': data.uid
+            }
+          ]
+        })
+        // 使用 populate 方法填充 friendId 字段，将其替换为对应的文档
+        .populate('friendId')
+        // 使用 sort 方法按照 lastTime 字段进行降序排序
+        .sort({
+          'lastTime': -1
+        });
+
+      const docs = await query.exec().then((data) => {
+        let result = data.map((item) => {
+          //  和表对应
+          return {
+            message: item.message,
+            types: item.types,
+            time: item.time,
+          }
+        });
+        return result;
+
+      });
+
+
+      res.send({
+        code: 0,
+        data: docs
+      });
+    } catch (err) {
+      console.log(err);
+      res.send({
+        code: 1
+      });
+    }
+  },
+  // 汇总消息未读数
+  unReadMsg: async function (data, res) {
+    let wherestr = {
+      'userId': data.uid,
+      'friendId': data.fid,
+      'state': 1 // 1 为未读 0 为已读
+    }
+    try {
+
+      Message.find(wherestr).countDocuments().then((data) => {
+        res.send({
+          code: 0,
+          data: {
+            state: wherestr.state,
+            count: data
+          }
+        });
+      })
+    } catch (error) {
+      res.send({
+        code: 1
+      });
+    }
+
+  },
+  // 未读的消息清0
+  updateReadMsg: async function (data, res) {
+    // 修改项的条件
+    let wherestr = {
+      'userId': data.uid,
+      'friendId': data.fid,
+      'state': 1 // 1 为未读 0 为已读
+    };
+    let updatestr = { // 修改项 
+      'state': 0 // 0 为已读
+    };
+    try {
+      // 使用 updateMany 方法更新所有匹配的记录
+      let result = await Message.updateMany(wherestr, updatestr);
+      res.send({
+        code: 0,
+        data: '消息状态更新成功'
+      });
+    } catch (error) {
+      res.send({
+        code: 1,
+        error: error.message
+      });
+    }
+  },
 
 
 };
