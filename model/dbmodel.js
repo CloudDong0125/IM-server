@@ -137,7 +137,7 @@ var GroupUserSchema = new Schema({
     },
     tip: {
         type: Number,
-        default: 0
+        default: 0 // 0 未读消息 1 有消息
     },
     time: {
         type: Date,

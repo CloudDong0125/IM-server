@@ -26,3 +26,24 @@ exports.updateReadMsg = function (req, res) {
     let data = req.body;
     dbserver.updateReadMsg(data, res)
 }
+
+// 群列表
+exports.getGroupList = function (req, res) {
+    // 获取请求的参数
+    let uid = req.body.uid;
+    dbserver.getGroupList(uid, res)
+}
+// 群消息
+exports.getGroupMsg = function (req, res) {
+    // 获取请求的参数
+    let data = req.body;
+    dbserver.getGroupMsg(data, res)
+}
+
+// 更新群消息数状态
+exports.updateGroupMsg = function (req, res) {
+    // 获取请求的参数
+    let data = req.body;
+    dbserver.updateGroupMsg(data, res)
+}
+

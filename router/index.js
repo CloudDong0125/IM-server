@@ -113,4 +113,19 @@ module.exports = function (app) {
     index.updateReadMsg(req, res);
   });
 
+  // --- 群
+  
+  // 群列表
+  app.post('/index/getGroupList', (req, res) => {
+    index.getGroupList(req, res);
+  });
+  // 群消息
+  app.post('/index/getGroupMsg', (req, res) => {
+    index.getGroupMsg(req, res);
+  });
+  // 更新群消息数状态
+  app.post('/index/updateGroupMsg', (req, res) => {
+    index.updateGroupMsg(req, res);
+  });
+
 };

@@ -11,7 +11,7 @@ var Friend = dbmodel.Friend;
 var Message = dbmodel.Message;
 var Group = dbmodel.Group;
 var GroupUser = dbmodel.GroupUser;
-
+var GroupMsg = dbmodel.GroupMsg;
 
 module.exports = {
   // 注册前查找用户
@@ -705,6 +705,102 @@ module.exports = {
       });
     }
   },
+
+  // --- 群操作
+
+
+  // 获取群列表
+  getGroupList: async function (uid, res) {
+    try {
+      const query = GroupUser.find({})
+        .where({
+          'userId': uid
+        })
+        .populate('groupId')
+        .sort({
+          'time': -1
+        });
+      const docs = await query.exec().then((data) => {
+        let result = data.map((item) => {
+          console.log(item)
+          return {
+            gid: item.groupId._id, // user表
+            name: item.groupId.name,
+            imgUrl: item.groupId.imgUrl,
+            markname: item.name,
+            lastTime: item.lastTime,
+            tip: item.tip
+          }
+        });
+        return result;
+      });
+      res.send({
+        code: 0,
+        data: docs
+      });
+    } catch (err) {
+      console.log(err);
+      res.send({
+        code: 1
+      });
+    }
+  },
+
+  // 获取群消息
+  getOneGroupMsg: async function (data, res) {
+    var query = GroupMsg.find({});
+    query.where({
+      'groupId': data.gid
+    });
+    query.populate('userId'); // 关联到user表
+    query.sort({
+      'time': -1
+    });
+    var docs = await query.exec().then((data) => {
+      var result = data.map((item) => {
+        return {
+          id: item.userId._id, // 发送者id
+          name: item.userId.name, // 发送者
+          imgUrl: item.userId.imgUrl, // 发送者头像
+          message: item.message, // 消息内容
+          time: item.time, // 发送时间
+          types: item.types, // 消息类型
+        }
+      });
+      return result;
+    }
+    );
+    res.send({
+      code: 0,
+      data: docs
+    });
+
+  },
+
+  // 更新群消息数状态
+  updateGroupMsg: async function (data, res) {
+    // 修改项的条件
+    var wherestr = {
+      'groupId': data.gid,
+      'userId': data.uid
+    };
+    // 修改项
+    var updatestr = {
+      'tip': 0 // 0 为已读 1 为未读
+    };
+    try {
+      var result = await GroupUser.updateOne(wherestr, updatestr);
+      res.send({
+        code: 0,
+        data: result
+      });
+    } catch (err) {
+      res.send({
+        code: 1
+      });
+    }
+  },
+
 
 
 };
